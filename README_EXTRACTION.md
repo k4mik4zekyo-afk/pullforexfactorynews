@@ -46,12 +46,13 @@ df_jan_jun = pd.read_csv("Jan01_2025_June24_2025_events.csv")
 df_jun_dec = pd.read_csv("June01_2025_December31_2025_events.csv")
 
 # Filter June-Dec to only include events after June 24
+# Note: Using utc=True for parsing mixed timezones consistently
 df_jun_dec['DateTime_dt'] = pd.to_datetime(df_jun_dec['DateTime'], utc=True)
 june_24_end = pd.to_datetime("2025-06-24T23:59:59-08:00", utc=True)
 df_jun25_dec = df_jun_dec[df_jun_dec['DateTime_dt'] > june_24_end].copy()
 df_jun25_dec = df_jun25_dec.drop('DateTime_dt', axis=1)
 
-# Combine and sort
+# Combine and sort (utc=True handles mixed timezone offsets like -08:00 and -07:00)
 combined = pd.concat([df_jan_jun, df_jun25_dec], ignore_index=True)
 combined['DateTime_sort'] = pd.to_datetime(combined['DateTime'], utc=True)
 combined = combined.sort_values('DateTime_sort')

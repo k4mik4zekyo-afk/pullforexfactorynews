@@ -163,9 +163,12 @@ def main():
     year = 2025
     all_dataframes = []
     
+    # Use script directory as base path for finding HTML files
+    script_dir = os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(__file__) else os.getcwd()
+    
     # Process each HTML file
     for month, filename in sorted(html_files.items()):
-        filepath = os.path.join(os.getcwd(), filename)
+        filepath = os.path.join(script_dir, filename)
         
         if not os.path.exists(filepath):
             print(f"Warning: File not found: {filepath}")
@@ -190,8 +193,8 @@ def main():
         combined_df = combined_df.sort_values('DateTime_sort')
         combined_df = combined_df.drop('DateTime_sort', axis=1)
         
-        # Write to CSV
-        output_file = "June01_2025_December31_2025_events.csv"
+        # Write to CSV in the script directory
+        output_file = os.path.join(script_dir, "June01_2025_December31_2025_events.csv")
         combined_df.to_csv(output_file, index=False)
         
         print(f"\n{'='*60}")
